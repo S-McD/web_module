@@ -8,9 +8,10 @@ class Application < Sinatra::Base
   end
 
   get '/hello' do
-    name = params[:name]
-  
-    return "Hello #{name}"
+    # name = params[:name]
+    # p "Hello #{name}"
+
+    return erb(:index)
   end
 
   get '/names' do
