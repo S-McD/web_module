@@ -11,12 +11,18 @@ describe Application do
   let(:app) { Application.new }
 
   context "GET /albums" do
-    it "returns a list of albums" do
+    it "returns a html list of albums" do
       response = get('/albums')
-      expected_response = "Surfer Rosa, Waterloo, Super Trouper, Bossanova, Lover, Folklore, I Put a Spell on You, Baltimore, Here Comes the Sun, Fodder on My Wings, Ring Ring"
       expect(response.status).to eq(200)
-      expect(response.body).to eq(expected_response)
+      expect(response.body).to include('Title: Surfer Rosa','Release year: 1988')
+      expect(response.body).to include('Title: Folklore','Release year: 2020')
     end
+    # xit "returns a list of albums" do
+    #   response = get('/albums')
+    #   expected_response = "Surfer Rosa, Waterloo, Super Trouper, Bossanova, Lover, Folklore, I Put a Spell on You, Baltimore, Here Comes the Sun, Fodder on My Wings, Ring Ring"
+    #   expect(response.status).to eq(200)
+    #   expect(response.body).to eq(expected_response)
+    # end
   end
   context "POST /albums" do
     it 'should create a new album' do
@@ -47,11 +53,13 @@ describe Application do
     end
   end
   context "GET /albums/:id" do
-    it "should return an album by id number" do
-      response = get('/albums/1')
+    it "should return album info by id number" do
+      response = get('/albums/2')
+      # Test database doesn't have an album 1
+
       expect(response.status).to eq(200)
-      expect(response.body).to include('<h1>Doolittle</h1>')
-      expect(response.body).to include('Release year: 1989')
+      expect(response.body).to include('<h1>Surfer Rosa</h1>')
+      expect(response.body).to include('Release year: 1988')
       expect(response.body).to include('Artist: Pixies')
     end
   end
