@@ -1,8 +1,14 @@
 require "spec_helper"
 require "rack/test"
 require_relative '../../app'
+require_relative "../artist_repository_spec"
+require_relative "../album_repository_spec"
 
 describe Application do
+  before(:each) do 
+    reset_artists_table
+    reset_albums_table
+  end
   # This is so we can use rack-test helper methods.
   include Rack::Test::Methods
 
@@ -35,12 +41,18 @@ describe Application do
     end
   end
   context "GET /artists" do
-    it "returns a list of artists" do
+    it "returns a html list of artists" do
       response = get('/artists')
-      expected_response = "Pixies, ABBA, Taylor Swift, Nina Simone, Kiasmos"
       expect(response.status).to eq(200)
-      expect(response.body).to eq(expected_response)
+      expect(response.body).to include('Name: Pixies','Genre: Rock')
+      expect(response.body).to include('Name: ABBA','Genre: Pop')
     end
+    # it "returns a list of artists" do
+    #   response = get('/artists')
+    #   expected_response = "Pixies, ABBA, Taylor Swift, Nina Simone, Kiasmos"
+    #   expect(response.status).to eq(200)
+    #   expect(response.body).to eq(expected_response)
+    # end
   end
   context "POST /artists" do
     it 'should create a new artist' do
@@ -54,13 +66,20 @@ describe Application do
   end
   context "GET /albums/:id" do
     it "should return album info by id number" do
-      response = get('/albums/2')
-      # Test database doesn't have an album 1
+      response = get('/albums/1')
 
       expect(response.status).to eq(200)
-      expect(response.body).to include('<h1>Surfer Rosa</h1>')
-      expect(response.body).to include('Release year: 1988')
+      expect(response.body).to include('<h1>Doolittle</h1>')
+      expect(response.body).to include('Release year: 1989')
       expect(response.body).to include('Artist: Pixies')
+    end
+  end
+  context "GET /artists/:id" do
+    it "should return artist info by id number" do
+      response = get('/artists/1')
+      expect(response.status).to eq(200)
+      expect(response.body).to include('<h1>Pixies</h1>')
+      expect(response.body).to include('Genre: Rock')
     end
   end
 end
