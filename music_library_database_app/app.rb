@@ -14,6 +14,18 @@ class Application < Sinatra::Base
     also_reload 'lib/artist_repository'
   end
     
+  get '/albums/new' do
+  # # This route doesn't do much,
+  # # it returns the view with the HTML form.
+  return erb(:new_album)
+  end
+
+  get '/artists/new' do
+  # # This route doesn't do much,
+  # # it returns the view with the HTML form.
+  return erb(:new_artist)
+  end
+
   get '/albums/:id' do
     repo = AlbumRepository.new
     artist_repo = ArtistRepository.new
@@ -39,6 +51,11 @@ class Application < Sinatra::Base
   end
 
   post '/albums' do
+    if params[:title] == nil || params[:release_year] == nil || params[:artist_id] == nil then
+      status 400
+      return ""
+    end
+    
     repo = AlbumRepository.new
     new_album = Album.new
     new_album.title = params[:title]
@@ -46,7 +63,7 @@ class Application < Sinatra::Base
     new_album.artist_id = params[:artist_id]
     repo.create(new_album)
 
-    return ""
+    return erb(:album_created)
   end
 
   get '/artists' do
@@ -63,14 +80,20 @@ class Application < Sinatra::Base
   end
 
 post '/artists' do
+  if params[:name] == nil || params[:genre] == nil then
+    status 400
+    return ""
+  end
+
   repo = ArtistRepository.new
   new_artist = Artist.new
   new_artist.name = params[:name]
   new_artist.genre = params[:genre]
   repo.create(new_artist)
 
-  return ""
+  return erb(:artist_created)
 end
+
 get '/artists/:id' do
   repo = ArtistRepository.new
   @artist = repo.find(params[:id])
